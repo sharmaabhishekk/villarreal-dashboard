@@ -23,8 +23,8 @@ AWAY_COLOR = 'red'
 COLOR = "silver"
 NROWS, NCOLS = 2, 2
 
-st.markdown("# Villarreal Dashboard(Demo)")
-teams_widget = st.selectbox("Select Team", options=["Senior Team", "Villarreal B", "Villarreal C", "Women's"])
+st.markdown("# Web Application Villarreal CF")
+teams_widget = st.selectbox("Select Team", options=["Senior Team", "Villarreal B", "Villarreal C", "Villarreal Women's"])
 
 match_json_files = ['1492142_Villarreal_Getafe.json',
                     '1492157_Villarreal_Osasuna.json',
@@ -202,7 +202,7 @@ elif teams_widget == "Villarreal B" or teams_widget == "Villarreal C":
     fig = get_physical_fig(teams_widget)
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
-elif teams_widget == "Women's":
+elif teams_widget == "Villarreal Women's":
     fig = make_subplots(rows=4, cols=2)
     fig.update_layout(width=800, height=1100, autosize=True, showlegend=False)
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
