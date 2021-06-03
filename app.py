@@ -36,14 +36,14 @@ match_json_files = ['1492142_Villarreal_Getafe.json',
                     ]
 
 
-match_fitness_files = ['2020-2021_LaLigaSantander_J34_VIL-GTF_RendimientoFisico_VIL_Revisada_v1.xlsx',    
-                       '2020-2021_LaLigaSantander_J30_VIL-OSA_RendimientoFisico_VIL_Revisada_v1.xlsx',
-                       '2020-2021_LaLigaSantander_J31_ALV-VIL_RendimientoFisico_VIL_Revisada_v1.xlsx',
-                       '2020-2021_LaLigaSantander_J27_EIB-VIL_RendimientoFisico_VIL_Revisada_v1.xlsx',
-                       '2020-2021_LaLigaSantander_J32_VIL-BAR_RendimientoFisico_VIL_Revisada_v1.xlsx',
-                       '2020-2021_LaLigaSantander_J28_VIL-CAD_RendimientoFisico_VIL_Revisada_v1.xlsx',
-                       '2020-2021_LaLigaSantander_J29_GRA-VIL_RendimientoFisico_GRA_Revisada_v1.xlsx'
-                      ]
+match_fitness_files = ['J34_VIL-GTF.xlsx',
+                       'J30_VIL-OSA.xlsx', 
+                       'J31_ALV-VIL.xlsx', 
+                       'J27_EIB-VIL.xlsx', 
+                       'J32_VIL-BAR.xlsx', 
+                       'J28_VIL-CAD.xlsx', 
+                       'J29_GRA-VIL.xlsx'
+                       ]
 match_files = [os.path.join(r"static/fitnessdatafirstteam8games", match_file) for match_file in match_json_files]
 fitness_dict = dict(zip(match_files, match_fitness_files))    
 
