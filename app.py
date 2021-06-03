@@ -44,7 +44,7 @@ match_fitness_files = ['2020-2021_LaLigaSantander_J34_VIL-GTF_RendimientoFisico_
                        '2020-2021_LaLigaSantander_J28_VIL-CAD_RendimientoFisico_VIL_Revisada_v1.xlsx',
                        '2020-2021_LaLigaSantander_J29_GRA-VIL_RendimientoFisico_GRA_Revisada_v1.xlsx'
                       ]
-match_files = [os.path.join(r"static\fitnessdatafirstteam8games", match_file) for match_file in match_json_files]
+match_files = [os.path.join(r"static/fitnessdatafirstteam8games", match_file) for match_file in match_json_files]
 fitness_dict = dict(zip(match_files, match_fitness_files))    
 
 match_files_dict = {}

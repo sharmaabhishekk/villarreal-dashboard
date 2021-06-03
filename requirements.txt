@@ -5,3 +5,4 @@ streamlit_plotly_events==0.0.6
 numpy==1.18.5
 Pillow==8.2.0
 scikit_learn==0.24.2
+xlrd==2.0.1
