@@ -60,7 +60,7 @@ if teams_widget == "Senior Team":
     with open(match_file) as f:
         md = json.load(f)
     
-    fitness_df = pd.read_excel(os.path.join(r"static\fitnessdatafirstteam8games", fitness_dict[match_file]))
+    #fitness_df = pd.read_excel(os.path.join(r"static\fitnessdatafirstteam8games", fitness_dict[match_files_dict['Villarreal-Getafe']]))
 
     home_team, away_team = md["home"]["name"], md["away"]["name"]
     home_team_id, away_team_id = md["home"]["teamId"], md["away"]["teamId"]
