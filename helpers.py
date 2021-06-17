@@ -119,19 +119,121 @@ def get_aerials_data(md):
 
     d = d[d.index.isin(home_pls)]
     d = d[[col for col in d.columns if col in away_pls]]
-    return d.style.background_gradient(cmap="viridis", low=min(d.min(axis=1)), high=max(d.max(axis=1)))
+    d[d.columns] = d[d.columns].astype(int)
+    for i in d.index:
+        for j in d.columns:
+            if d.loc[i, j] != 0:
+                d.loc[i, j] = f"{d.loc[i, j]}/{np.random.randint(low=0, high=d.loc[i, j]+1)}"
+    return d
 
+def get_corners(md, side="home"):
+    df = prep_df(md)
+    team_id = md[side]["teamId"]
+    return df.loc[df.qualifiers.str.contains("CornerTaken") & (df.teamId == team_id)][["player_name", "x", "y", "endX", "endY"]]
 
-def get_physical_fig(team):
-
-    fig = make_subplots(rows=3, cols=2)
-    fig.update_layout(width=800, height=1200, showlegend=False)
-
+def get_b_figs(team):
+    
     if team == "Villarreal B":
-        df = pd.read_excel("static/Vill B.xlsx")
-    else:
-        df = pd.read_excel("static/Vill C.xlsx")
 
+        pdf = pd.read_excel('static/bc_teams/Vllarreal B players stats.xlsx', sheet_name=None, index_col=None)
+        df = pd.read_excel("static/bc_teams/Vill B.xlsx")    
+    else:
+        pdf = pd.read_excel('static/bc_teams/Villarreal III_players.xlsx', sheet_name=None, index_col=None)
+        df = pd.read_excel("static/bc_teams/Vill C.xlsx")       
+
+    pdf = pd.concat(pdf.values())
+    pdf = pdf.replace("-", 0).fillna(0)
+
+    fig_attacking = make_subplots(rows=2, cols=2)
+    fig_attacking.update_layout(width=800, height=1200, showlegend=False)
+
+    fig_attacking.add_trace(go.Scatter(x=pdf["xG (Expected goals)"]*100, y=pdf["Shots"], mode='markers', marker={'symbol': 'circle'}, 
+                             text=pdf["Unnamed: 1"], hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=1, col=1)
+
+    fig_attacking.add_trace(go.Scatter(x=pdf["Goals"], y=pdf["Assists"], mode='markers', marker={'symbol': 'circle'}, 
+                             text=pdf["Unnamed: 1"], hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=1, col=2) 
+
+    fig_attacking.add_trace(go.Scatter(x=pdf["Key passes accurate"], y=pdf["Crosses accurate"], mode='markers', marker={'symbol': 'circle'}, 
+                             text=pdf["Unnamed: 1"], hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=2, col=1)      
+
+    fig_attacking.add_trace(go.Scatter(x=pdf["Сhances created"], y=pdf["Fouls suffered"], mode='markers', marker={'symbol': 'circle'}, 
+                             text=pdf["Unnamed: 1"], hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=2, col=2)
+
+    fig_attacking.update_xaxes(title_text="xG", row=1, col=1)
+    fig_attacking.update_xaxes(title_text="Goals", row=1, col=2)
+    fig_attacking.update_xaxes(title_text="Key Passes", row=2, col=1)
+    fig_attacking.update_xaxes(title_text="Chances Created", row=2, col=2)
+
+    fig_attacking.update_yaxes(title_text="Shots", row=1, col=1)
+    fig_attacking.update_yaxes(title_text="Assists", row=1, col=2)
+    fig_attacking.update_yaxes(title_text="Crosses", row=2, col=1) 
+    fig_attacking.update_yaxes(title_text="Fouls Won", row=2, col=2) 
+
+    ######
+
+    fig_defending = make_subplots(rows=2, cols=2)
+    fig_defending.update_layout(width=800, height=1200, showlegend=False)
+
+    fig_defending.add_trace(go.Scatter(x=pdf["Fouls"], y=pdf["Ball recoveries"], mode='markers', marker={'symbol': 'circle'}, 
+                             text=pdf["Unnamed: 1"], hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=1, col=1)
+
+    fig_defending.add_trace(go.Scatter(x=pdf["Yellow cards"], y=pdf["Offsides"], mode='markers', marker={'symbol': 'circle'}, 
+                             text=pdf["Unnamed: 1"], hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=1, col=2) 
+
+    fig_defending.add_trace(go.Scatter(x=pdf["Tackles successful"], y=pdf["Ball interceptions"], mode='markers', marker={'symbol': 'circle'}, 
+                             text=pdf["Unnamed: 1"], hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=2, col=1)      
+
+    fig_defending.add_trace(go.Scatter(x=pdf["Attacking challenges won"], y=pdf["Air challenges"], mode='markers', marker={'symbol': 'circle'}, 
+                             text=pdf["Unnamed: 1"], hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=2, col=2)
+    
+    fig_defending.update_xaxes(title_text="Fouls Committed", row=1, col=1)
+    fig_defending.update_xaxes(title_text="Yellow Cards", row=1, col=2)
+    fig_defending.update_xaxes(title_text="Successful Tackles", row=2, col=1)
+    fig_defending.update_xaxes(title_text="Challenges Won", row=2, col=2)
+
+    fig_defending.update_yaxes(title_text="Ball Recoveries", row=1, col=1)
+    fig_defending.update_yaxes(title_text="Offsides", row=1, col=2)
+    fig_defending.update_yaxes(title_text="Interceptions", row=2, col=1) 
+    fig_defending.update_yaxes(title_text="Aerial Duels Won", row=2, col=2)   
+    #######
+
+    fig_fitness = make_subplots(rows=2, cols=2)
+    fig_fitness.update_layout(width=800, height=1200, showlegend=False)
+
+    fig_fitness.add_trace(go.Scatter(x=df.Accelerations, y=df.Decelerations, mode='markers', marker={'symbol': 'circle'}, 
+                             text=df.Player, hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=1, col=1) 
+
+    fig_fitness.add_trace(go.Scatter(x=df['Sprint Abs Cnt'], y=df['Sprint Abs (m)'], mode='markers', marker={'symbol': 'circle'}, 
+                             text=df.Player, hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=1, col=2) 
+
+    fig_fitness.add_trace(go.Scatter(x=df['Player Load (a.u.)'], y=df['Energy Expenditure (kcal)'], mode='markers', marker={'symbol': 'circle'}, 
+                             text=df.Player, hovertemplate="<b>%{text}</b><extra></extra>"),
+                             row=2, col=1) 
+
+    fig_fitness.update_xaxes(title_text="Accelerations", row=1, col=1)
+    fig_fitness.update_xaxes(title_text="Sprint Abs Cnt", row=1, col=2)
+    fig_fitness.update_xaxes(title_text="Player Load (a.u.)", row=2, col=1)
+
+    fig_fitness.update_yaxes(title_text="Decelerations", row=1, col=1)
+    fig_fitness.update_yaxes(title_text="Sprint Abs (m)", row=1, col=2)
+    fig_fitness.update_yaxes(title_text="Energy Expenditure (kcal)", row=2, col=1)    
+
+    return fig_attacking, fig_defending, fig_fitness
+
+def get_c_fig(team):
+
+    df = pd.read_excel("static/bc_teams/Vill C.xlsx")
+    fig = make_subplots(rows=3, cols=2)
     fig.add_trace(go.Scatter(x=df.Accelerations, y=df.Decelerations, mode='markers', marker={'symbol': 'circle'}, 
                              text=df.Player, hovertemplate="<b>%{text}</b><extra></extra>"),
                              row=1, col=1) 
@@ -151,6 +253,7 @@ def get_physical_fig(team):
     fig.update_yaxes(title_text="Decelerations", row=1, col=1)
     fig.update_yaxes(title_text="Sprint Abs (m)", row=1, col=2)
     fig.update_yaxes(title_text="Energy Expenditure (kcal)", row=2, col=1)
+    fig.update_layout(width=800, height=1200, showlegend=False)
 
     return fig
 
